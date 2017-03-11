@@ -5,6 +5,8 @@
  */
 package nl.loek.kwetter.beans;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,8 +54,9 @@ public class ApisResource {
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public List<User> getXml() {
-        return kwetterService.findAllUsers();
+    public String getXml() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(kwetterService.findAllUsers());
     }
 
     /**
