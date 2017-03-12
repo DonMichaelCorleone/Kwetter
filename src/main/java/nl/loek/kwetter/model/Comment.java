@@ -31,12 +31,13 @@ public class Comment implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private GregorianCalendar date;
 
-    private String poster;
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private User poster;
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Posting post;
 
-    public Comment(String content, String author, Posting p) {
+    public Comment(String content, User author, Posting p) {
         this.content = content;
         this.date = new GregorianCalendar();
         this.post = p;
@@ -47,7 +48,7 @@ public class Comment implements Serializable {
 
     }
 
-    public Comment(Long id, String content, String u, Posting p) {
+    public Comment(Long id, String content, User u, Posting p) {
         this.id = id;
         this.content = content;
         this.date = new GregorianCalendar();

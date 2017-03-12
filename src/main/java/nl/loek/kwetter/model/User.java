@@ -6,27 +6,22 @@
 package nl.loek.kwetter.model;
 
 import java.io.Serializable;
-import static java.lang.reflect.Array.set;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import nl.loek.kwetter.model.Posting;
-import nl.loek.kwetter.model.User;
 
 /**
  *
@@ -35,17 +30,18 @@ import nl.loek.kwetter.model.User;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
-@Table(name= "User")
+@Table(name="User")
 @NamedQueries({
-    @NamedQuery(name = "User.setPassword", query = "select u from User as u where u.id= :id"),
-    @NamedQuery(name = "User.getFollows", query = "select u from User as u where u.id= :id"),
-    @NamedQuery(name = "User.getFollower", query = "select u from User as u where u.id= :id"),
-    @NamedQuery(name = "User.findAllFollows", query = "select u from User as u where u.id= :id"),
-    @NamedQuery(name = "User.findAllfollowers", query = "select u from User as u where u.id= :id"),
-    @NamedQuery(name = "User.findByUsername", query = "select u from User as u where u.userName= :username"),
+//    @NamedQuery(name = "User.setPassword", query = "select u from User as u where u.id= :id"),
+//    @NamedQuery(name = "User.getFollows", query = "select u from User as u where u.id= :id"),
+//    @NamedQuery(name = "User.getFollower", query = "select u from User as u where u.id= :id"),
+//    @NamedQuery(name = "User.findAllFollows", query = "select u from User as u where u.id= :id"),
+//    @NamedQuery(name = "User.findAllfollowers", query = "select u from User as u where u.id= :id"),
+    @NamedQuery(name = "User.findByName", query = "select u from User as u where u.userName= :username"),
     @NamedQuery(name = "User.findAll", query = "select u from User as u")
 })
 public class User implements Serializable {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -53,22 +49,26 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
     
     @Size(min = 1, max = 32)
+    @Column(unique=true)
     private String userName;
     
     @OneToMany(cascade={CascadeType.PERSIST, CascadeType.REMOVE})
-    @Size(min = 1, max = 32)
     private List<Posting> tweets;
-   
     
     @OneToMany(cascade={CascadeType.PERSIST, CascadeType.REMOVE})
-    @Size(min = 1, max = 32)
     private List<User> following;
+    
+    @OneToMany(cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+    private List<User> followers;
     
     private String password;
     private String location;
+    
+    @Size(min = 1, max = 160)
     private String biography;
+    
     private String websiteURL;
-    private List<User> followers;
+    private String profilePicture;
     
     public User(){
         
@@ -78,17 +78,15 @@ public class User implements Serializable {
         this.userName = userName;
     }   
 
-    public User(String userName, String profilePicture, ArrayList<Posting> tweets, ArrayList<User> followers, ArrayList<User> following, String location, String biography, String websiteURL) {
+    public User(String userName, String password ,String location, String biography, String websiteURL) {
         this.userName = userName;
-        this.profilePicture = profilePicture;
-//        this.tweets = tweets;
-//        this.followers = followers;
-//        this.following = following;
+        this.password = password;
         this.location = location;
         this.biography = biography;
         this.websiteURL = websiteURL;
     }
-    private String profilePicture;
+    
+    
     
     public String getUserName() {
         return this.userName;
@@ -106,34 +104,34 @@ public class User implements Serializable {
         this.profilePicture = profilePicture;
     }
 
-//    public ArrayList<Posting> getTweets() {
-//        return tweets;
-//    }
-//
-//    public void setTweets(ArrayList<Posting> tweets) {
-//        this.tweets = tweets;
-//    }
-//
+    public List<Posting> getTweets() {
+        return tweets;
+    }
+
+    public void setTweets(ArrayList<Posting> tweets) {
+        this.tweets = tweets;
+    }
+
     public List<User> getFollowers() {
         return this.followers;
     }
-//    
-//    public String getPassword(){
-//        return this.password;
-//    }
-//    
-//    public void setPassword(String password){
-//        this.password = password;
-//    }
-//
+    
+    public String getPassword(){
+        return this.password;
+    }
+    
+    public void setPassword(String password){
+        this.password = password;
+    }
+
     public void addFollower(User follower) {
         this.followers.add(follower);
     }
 
-//    public ArrayList<User> getFollowing() {
-//        return following;
-//    }
-//
+    public List<User> getFollowing() {
+        return following;
+    }
+
     public void addFollowing(User following) {
         this.following.add(following);
     }

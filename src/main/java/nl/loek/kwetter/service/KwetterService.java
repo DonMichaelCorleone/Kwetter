@@ -12,11 +12,9 @@ import nl.loek.kwetter.model.User;
 public class KwetterService {
     
     @Inject
-//    @JPA
     private UserDAO userDAO;
 
     @Inject
-//    @JPA
     private PostingDAO postingDAO;
 
     public KwetterService() {
@@ -27,12 +25,12 @@ public class KwetterService {
         return user;
     }
 
-    public void createUser(User user) {
-        userDAO.createUser(user);
+    public Boolean createUser(User user) {
+        return userDAO.createUser(user);
     }
 
-    public void editUser(User user) {
-        userDAO.editUser(user);
+    public Boolean editUser(User user) {
+        return userDAO.editUser(user);
     }
 
     public void removeUser(User user) {

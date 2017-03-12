@@ -15,27 +15,27 @@ import nl.loek.kwetter.model.User;
  */
 public interface UserDAO {
     
-    void createUser(User u);
+    Boolean createUser(User u);
     
-    void editUser(User u);
+    Boolean editUser(User u);
         
     void removeUser(User u);
     
+    void setPassword(Long id , String password);
+    
+    int countFollowers(String username);
+
+    int countFollowing(String username);
+    
     User findUserByName(String username);
-    
-    List<User> findAllFollowers(Long id);
-    
-    List<User> findAllFollows(Long id);    
     
     User getFollower(Long id);
     
     User getFollows(Long id);
     
-    void setPassword(Long id , String password);
+    List<User> findAllFollowers(Long id);
+    
+    List<User> findAllFollows(Long id);    
     
     List<User> findAllUsers();
-    
-    int countFollowers(String username);
-
-    int countFollowing(String username);
 }

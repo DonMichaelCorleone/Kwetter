@@ -2,7 +2,6 @@ package nl.loek.kwetter.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -10,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -36,8 +34,8 @@ public class Posting implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    
-    private String author;
+    @OneToOne(cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+    private User author;
     
     private String title;
     private String content;
@@ -54,7 +52,7 @@ public class Posting implements Serializable{
         
     }
     
-    public Posting(String author, String title, String content) {
+    public Posting(User author, String title, String content) {
         this.author = author;
         this.title = title;
         this.content = content;
@@ -63,7 +61,7 @@ public class Posting implements Serializable{
         this.nextCommentId = 1L;
     }
 
-    public Posting(Long id, String author, String title, String content) {
+    public Posting(Long id, User author, String title, String content) {
         this.id = id;
         this.author = author;
         this.title = title;
@@ -77,7 +75,7 @@ public class Posting implements Serializable{
         return comments;
     }
     
-    public void addComment(String message , String author) {
+    public void addComment(String message , User author) {
         Comment comment = new Comment(this.nextCommentId++, message, author, this);
         this.comments.add(comment);
     }
@@ -102,11 +100,11 @@ public class Posting implements Serializable{
         this.id = id;
     }
 
-    public String getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
     

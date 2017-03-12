@@ -1,9 +1,7 @@
 package nl.loek.kwetter.dao;
 
 import java.util.List;
-import javax.enterprise.event.Observes;
 import nl.loek.kwetter.model.Posting;
-import nl.loek.kwetter.model.User;
 
 public interface PostingDAO {
 

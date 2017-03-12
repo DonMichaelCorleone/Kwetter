@@ -29,7 +29,6 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        resources.add(nl.loek.kwetter.beans.ApiResource.class);
         resources.add(nl.loek.kwetter.beans.ApisResource.class);
     }
     
