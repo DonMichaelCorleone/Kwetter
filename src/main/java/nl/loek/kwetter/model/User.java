@@ -5,18 +5,23 @@
  */
 package nl.loek.kwetter.model;
 
+import com.google.common.hash.Hashing;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -32,11 +37,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name="User")
 @NamedQueries({
-//    @NamedQuery(name = "User.setPassword", query = "select u from User as u where u.id= :id"),
-//    @NamedQuery(name = "User.getFollows", query = "select u from User as u where u.id= :id"),
-//    @NamedQuery(name = "User.getFollower", query = "select u from User as u where u.id= :id"),
-//    @NamedQuery(name = "User.findAllFollows", query = "select u from User as u where u.id= :id"),
-//    @NamedQuery(name = "User.findAllfollowers", query = "select u from User as u where u.id= :id"),
     @NamedQuery(name = "User.findByName", query = "select u from User as u where u.userName= :username"),
     @NamedQuery(name = "User.findAll", query = "select u from User as u")
 })
@@ -52,14 +52,28 @@ public class User implements Serializable {
     @Column(unique=true)
     private String userName;
     
-    @OneToMany(cascade={CascadeType.PERSIST, CascadeType.REMOVE})
-    private List<Posting> tweets;
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    public Role getUserRole() {
+        return role;
+    }
+
+    public void setUserRole(Role userRole) {
+        this.role = userRole;
+    }
     
-    @OneToMany(cascade={CascadeType.PERSIST, CascadeType.REMOVE})
-    private List<User> following;
+//    @OneToMany(cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+//    private List<Posting> tweets;
     
-    @OneToMany(cascade={CascadeType.PERSIST, CascadeType.REMOVE})
-    private List<User> followers;
+    @ManyToMany(cascade={CascadeType.ALL})
+	@JoinTable(name="followers",
+		joinColumns={@JoinColumn(name="userId")},
+		inverseJoinColumns={@JoinColumn(name="friendId")})
+	private List<User> following;
+
+	@ManyToMany(mappedBy="following")
+	private List<User> followers;
     
     private String password;
     private String location;
@@ -74,20 +88,12 @@ public class User implements Serializable {
         
     }
     
-    public User(String userName){
+    public User(String userName, String password) {
         this.userName = userName;
-    }   
-
-    public User(String userName, String password ,String location, String biography, String websiteURL) {
-        this.userName = userName;
-        this.password = password;
-        this.location = location;
-        this.biography = biography;
-        this.websiteURL = websiteURL;
+        this.password = Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString();
+        this.role = Role.User;
     }
-    
-    
-    
+        
     public String getUserName() {
         return this.userName;
     }
@@ -104,14 +110,6 @@ public class User implements Serializable {
         this.profilePicture = profilePicture;
     }
 
-    public List<Posting> getTweets() {
-        return tweets;
-    }
-
-    public void setTweets(ArrayList<Posting> tweets) {
-        this.tweets = tweets;
-    }
-
     public List<User> getFollowers() {
         return this.followers;
     }
@@ -121,7 +119,7 @@ public class User implements Serializable {
     }
     
     public void setPassword(String password){
-        this.password = password;
+        this.password = Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString();
     }
 
     public void addFollower(User follower) {
