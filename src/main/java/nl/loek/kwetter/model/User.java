@@ -50,22 +50,18 @@ public class User implements Serializable {
     
     @Size(min = 1, max = 32)
     @Column(unique=true)
+    private String emailAdress;
+    
+    @Size(min = 1, max = 32)
+    @Column(unique=true)
     private String userName;
+    
+    @Size(min = 1, max = 160)
+    private String biography;
     
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public Role getUserRole() {
-        return role;
-    }
-
-    public void setUserRole(Role userRole) {
-        this.role = userRole;
-    }
-    
-//    @OneToMany(cascade={CascadeType.PERSIST, CascadeType.REMOVE})
-//    private List<Posting> tweets;
-    
     @ManyToMany(cascade={CascadeType.ALL})
 	@JoinTable(name="followers",
 		joinColumns={@JoinColumn(name="userId")},
@@ -74,13 +70,11 @@ public class User implements Serializable {
 
 	@ManyToMany(mappedBy="following")
 	private List<User> followers;
-    
+        
+    @Size(min = 8, max = 160)
     private String password;
+    
     private String location;
-    
-    @Size(min = 1, max = 160)
-    private String biography;
-    
     private String websiteURL;
     private String profilePicture;
     
@@ -92,6 +86,23 @@ public class User implements Serializable {
         this.userName = userName;
         this.password = Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString();
         this.role = Role.User;
+    }
+    
+     public Role getUserRole() {
+        return role;
+    }
+
+    public void setUserRole(Role userRole) {
+        this.role = userRole;
+    }
+    
+    
+    public String getEmailAdress() {
+        return emailAdress;
+    }
+
+    public void setEmailAdress(String emailAdress) {
+        this.emailAdress = emailAdress;
     }
         
     public String getUserName() {

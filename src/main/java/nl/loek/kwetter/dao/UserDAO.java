@@ -19,23 +19,19 @@ public interface UserDAO {
     
     Boolean editUser(User u);
         
-    void removeUser(User u);
+    Boolean removeUser(String username);
     
     void setPassword(Long id , String password);
     
-    int countFollowers(String username);
+    int countFollowers(Long id);
 
-    int countFollowing(String username);
+    int countFollowing(Long id);
     
     User findUserByName(String username);
     
     User getFollower(Long id);
     
     User getFollows(Long id);
-    
-    List<User> findAllFollowers(Long id);
-    
-    List<User> findAllFollows(Long id);    
     
     List<User> findAllUsers();
 }

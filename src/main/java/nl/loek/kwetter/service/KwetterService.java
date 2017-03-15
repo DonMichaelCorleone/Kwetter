@@ -21,8 +21,7 @@ public class KwetterService {
     }
 
     public User findByUsername(String username) {
-        User user = userDAO.findUserByName(username);
-        return user;
+        return userDAO.findUserByName(username);
     }
 
     public Boolean createUser(User user) {
@@ -32,28 +31,41 @@ public class KwetterService {
     public Boolean editUser(User user) {
         return userDAO.editUser(user);
     }
-
-    public void removeUser(User user) {
-        userDAO.removeUser(user);
+    
+    public Boolean removeUser(String username) {
+        return userDAO.removeUser(username);
     }
 
     public List<User> findAllUsers() {
         return userDAO.findAllUsers();
     }
-
-    public int countFollowers(String username) {
-        return userDAO.countFollowers(username);
+    
+     public int countFollowers(Long id) {
+        return userDAO.countFollowers(id);
     }
 
-    public int countFollowing(String username) {
-        return userDAO.countFollowing(username);
+    public int countFollowing(Long id) {
+        return userDAO.countFollowing(id);
     }
 
-    public List<Posting> findTweetsByUser(String username) {
-        return postingDAO.findByUser(username);
+    public List<Posting> findTweetsByUser(User u) {
+        return postingDAO.findByUser(u);
+    }
+    
+    public Posting findPosting(Long id) {
+        return postingDAO.findPosting(id);
+    }
+    
+    public Boolean editPosting(Posting posting) {
+        return postingDAO.editPosting(posting);
+    }
+    
+    public Boolean removePosting(Long id) {
+        return postingDAO.removePosting(id);
+    }
+    
+    public Boolean createPosting(Posting p) {
+        return postingDAO.createPosting(p);
     }
 
-    public int countTweets(String username) {
-        return postingDAO.findByUser(username).size();
-    }
 }

@@ -27,7 +27,7 @@ import nl.loek.kwetter.model.User;
 @Table(name= "Posting")
 @NamedQueries({
     @NamedQuery(name = "Posting.findAll", query = "select p from Posting as p"),
-    @NamedQuery(name = "Posting.findByUserName", query = "select p from Posting as p where p.author = :username"),
+    @NamedQuery(name = "Posting.findByUserName", query = "select p from Posting as p where p.author = :author"),
 })
 public class Posting implements Serializable{
     @Id
@@ -61,15 +61,6 @@ public class Posting implements Serializable{
         this.nextCommentId = 1L;
     }
 
-    public Posting(Long id, User author, String title, String content) {
-        this.id = id;
-        this.author = author;
-        this.title = title;
-        this.content = content;
-        this.date = new GregorianCalendar();
-        this.comments = new ArrayList<Comment>();
-        this.nextCommentId = 1L;
-    }
 
     public List<Comment> getComments() {
         return comments;
