@@ -24,7 +24,7 @@ public class PostingDaoJPAImp implements PostingDAO {
     @Override
     public Boolean createPosting(Posting p) {
         try {
-            em.persist(p);
+            em.merge(p);
             return true;
         } catch (Exception e) {
             return false;
@@ -50,7 +50,7 @@ public class PostingDaoJPAImp implements PostingDAO {
     public Boolean removePosting(Long id) {
         try {
             Posting i = em.find(Posting.class, id);
-            em.remove(id);
+            em.remove(i);
             return true;
 
         } catch (Exception e) {
@@ -65,7 +65,7 @@ public class PostingDaoJPAImp implements PostingDAO {
     }
 
     @Override
-    public List<Posting> findByUser(User u) {
+    public List<Posting> findByUser(String u) {
         Query q = em.createNamedQuery("Posting.findByUserName", Posting.class);
         q.setParameter("author", u);
         return (List<Posting>) q.getResultList();

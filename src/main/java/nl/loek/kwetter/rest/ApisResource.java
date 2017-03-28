@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.loek.kwetter.beans;
+package nl.loek.kwetter.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.ManagedBean;
 import javax.ejb.Stateless;
 import javax.ws.rs.POST;
 import javax.ws.rs.Consumes;
@@ -61,8 +62,8 @@ public class ApisResource {
     @GET
     @Path("/user")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getAllUsers() throws JsonProcessingException {
-        return mapper.writeValueAsString(this.convertUsersToDto(kwetterService.findAllUsers()));
+    public List<UserDTO> getAllUsers() throws JsonProcessingException {
+        return this.convertUsersToDto(kwetterService.findAllUsers());
     }
 
     @GET
@@ -87,9 +88,9 @@ public class ApisResource {
     @Path("user")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public String addUser(@FormParam("username") String username, @FormParam("password") String password) {
+    public String addUser(@FormParam("username") String username, @FormParam("password") String password,@FormParam("email") String email) {
         try {
-            User u = new User(username, password);
+            User u = new User(username,email, password);
             return Boolean.toString(kwetterService.createUser(u));
         } catch (InternalServerErrorException e) {
             return e.getCause().toString();
@@ -111,12 +112,12 @@ public class ApisResource {
     @Path("user/edit")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public String editUser(@FormParam("username") String username, @FormParam("password") String password, @FormParam("fullname") String fullname, @FormParam("location") String location, @FormParam("biography") String biography, @FormParam("websiteURL") String websiteURL) {
+    public String editUser(@FormParam("profilepicture") String profilepicture,@FormParam("username") String username, @FormParam("password") String password, @FormParam("fullname") String fullname, @FormParam("location") String location, @FormParam("biography") String biography, @FormParam("websiteURL") String websiteURL) {
         User u = kwetterService.findByUsername(username);
         u.setBiography(biography);
         u.setLocation(location);
         u.setPassword(password);
-        u.setProfilePicture(websiteURL);
+        u.setProfilePicture(profilepicture);
         u.setWebsiteURL(websiteURL);
         return Boolean.toString(kwetterService.editUser(u));
     }
@@ -203,7 +204,7 @@ public class ApisResource {
     @Produces(MediaType.APPLICATION_JSON)
     public String postTweet(@FormParam("username") String username, @FormParam("title") String title, @FormParam("content") String content) throws JsonProcessingException {
         User u = kwetterService.findByUsername(username);
-        Posting p = new Posting(u, title, content);
+        Posting p = new Posting(u.getUserName(), title, content);
         return mapper.writeValueAsString(kwetterService.createPosting(p));
     }
 
@@ -220,18 +221,7 @@ public class ApisResource {
     @Produces(MediaType.APPLICATION_JSON)
     public String getAllPosts(@PathParam("username") String username) throws JsonProcessingException {
         User u = kwetterService.findByUsername(username);
-        return mapper.writeValueAsString(this.convertPostingsToDto(kwetterService.findTweetsByUser(u)));
-    }
-
-    @POST
-    @Path("post/addcomment/")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
-    public String addComment(@FormParam("content") String content, @FormParam("posting") Long postingid, @FormParam("username") String username) throws JsonProcessingException {
-        Posting p = kwetterService.findPosting(postingid);
-        User author = kwetterService.findByUsername(username);
-        p.addComment(content, author);
-        return mapper.writeValueAsString(kwetterService.editPosting(p));
+        return mapper.writeValueAsString(this.convertPostingsToDto(kwetterService.findTweetsByUser(u.getUserName())));
     }
 
     private List<PostingDTO> convertPostingsToDto(List<Posting> postings) {

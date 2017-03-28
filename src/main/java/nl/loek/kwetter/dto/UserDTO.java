@@ -10,15 +10,15 @@ package nl.loek.kwetter.dto;
  * @author Loek
  */
 public class UserDTO {
-    
+
     private String role;
     private String biography;
     private String websiteURL;
     private String location;
     private String userName;
     private String emailAddress;
-    
-    
+    private String profilePicture;
+
     public UserDTO(String name, String emailAddress) {
         this.userName = name;
         this.emailAddress = emailAddress;
@@ -26,6 +26,22 @@ public class UserDTO {
 
     public UserDTO() {
 
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     public String getUserRole() {

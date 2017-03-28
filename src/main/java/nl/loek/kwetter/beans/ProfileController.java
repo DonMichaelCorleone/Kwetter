@@ -101,6 +101,7 @@ public class ProfileController implements Serializable {
             selectedUser.setBiography(biography);
             selectedUser.setLocation(location);
             this.kwetterService.editUser(selectedUser);
+            return selectedUser;
     }
 
     public int getFollowingCount() {

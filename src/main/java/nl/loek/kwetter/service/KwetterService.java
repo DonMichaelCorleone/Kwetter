@@ -48,8 +48,12 @@ public class KwetterService {
         return userDAO.countFollowing(id);
     }
 
-    public List<Posting> findTweetsByUser(User u) {
+    public List<Posting> findTweetsByUser(String u) {
         return postingDAO.findByUser(u);
+    }
+    
+    public List<Posting>findAllPostings() {
+        return postingDAO.findAll();
     }
     
     public Posting findPosting(Long id) {

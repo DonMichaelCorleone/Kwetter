@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:a4j="http://richfaces.org/a4j">
+    <h:head>
+        <h:outputStylesheet library="css" name="bootstrap.min.css"  />
+        <h:outputScript library="primefaces" name="jquery/jquery.js" />
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"/>
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <title>Profile #{profileController.username}</title>
+    </h:head>
+    <h:body style="background-color:#f5f5f">
+        <div class="well">
+            <div class="row">
+                <div class="col-md-12">
+                    <h:form id="searchForm">
+                        <b:commandButton id="btnsearch" class="btn btn-default" 
+                                         value="Logout"  style="float:right;" action="#{profileController.logout()}" >
+                        </b:commandButton>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+        <b:container style="margin-right: 5%; margin-left: 5%;width:1920px!important;">
+            <b:row>
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">Users</div>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Location</th>
+                                        <th>WebsiteURL</th>
+                                        <th>Role</th>
+                                        <th>Manage Users</th>
+                                    </tr>
+                                    <a4j:repeat value="#{moderatorController.allUsers}" var="user">
+                                        <tr><h:form><td><input name="username" class="form form-control" type="text" value="#{user.userName}"/></td><td><input name="emailadress" class="form form-control" type="text" value="#{user.emailAdress}"/></td><td><input class="form form-control" name="location" type="text" value="#{user.location}"/></td><td><input class="form form-control" type="text" readonly="readOnly" name="websiteurl" value="#{user.websiteURL}"/></td><td><input name="role" class="form form-control" type="text" value="#{user.userRole}"/></td><td><h:commandButton action="#{moderatorController.editUser(user)}" class="btn btn-warning" value="Edit"></h:commandButton><h:commandButton action="#{moderatorController.removeUser(user)}" class="btn btn-error" value="Remove"></h:commandButton></td></h:form></tr>
+                                    </a4j:repeat>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </b:row>
+            <b:row>
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">Posts</div>
+                        </div>
+                        <div class="panel-body">
+                            <table id="table_div" class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Username</th>
+                                        <th>Content</th>
+                                        <th>Date</th>
+                                    </tr>
+                                    <a4j:repeat value="#{moderatorController.allPostings}" var="tweet">
+                                        <tr><td>#{tweet.title}</td><td>#{tweet.author}</td><td>#{tweet.content}</td><td>#{tweet.date.time}</td><td><h:form><h:commandButton action="#{moderatorController.removePosting(tweet)}" class="btn btn-warning" value="Edit"></h:commandButton><h:commandButton action="#{moderatorController.removePosting(tweet)}" class="btn btn-error" value="Remove"></h:commandButton></h:form></td></tr>
+                                    </a4j:repeat>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                            Launch demo modal
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                                        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </b:row>
+        </b:container>
+    </h:body>
+</html>
+

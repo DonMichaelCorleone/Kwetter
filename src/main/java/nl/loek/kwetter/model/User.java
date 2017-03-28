@@ -22,6 +22,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -62,7 +63,7 @@ public class User implements Serializable {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToMany(cascade={CascadeType.ALL})
+    @ManyToMany(cascade={CascadeType.MERGE})
 	@JoinTable(name="followers",
 		joinColumns={@JoinColumn(name="userId")},
 		inverseJoinColumns={@JoinColumn(name="friendId")})
@@ -82,10 +83,12 @@ public class User implements Serializable {
         
     }
     
-    public User(String userName, String password) {
+    public User(String userName, String email , String password) {
         this.userName = userName;
+        this.emailAdress = email;
         this.password = Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString();
         this.role = Role.User;
+        this.websiteURL = "http://localhost:8080/Kwetter/Home/" + userName;
     }
     
      public Role getUserRole() {
@@ -110,6 +113,7 @@ public class User implements Serializable {
     }
     
     public void setUserName(String userName) {
+        this.websiteURL = "http://localhost:8080/Kwetter/Home/" + userName;
         this.userName = userName;
     }
 
@@ -187,7 +191,6 @@ public class User implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof User)) {
             return false;
         }

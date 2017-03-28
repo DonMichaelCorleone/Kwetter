@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <h:outputStylesheet library="css" name="bootstrap.min.css"  />
+        <h:outputScript library="primefaces" name="jquery/jquery.js" />
+        <title>Home page Kwetter</title>
+    </h:head>
+    <h:body style="background-image: url('../images/background.jpg">
+        
+        <div class="well" style="background-color: #4099FF;"><h4 style="color:#fff">Welcome to Kwetter!</h4>
+            <a href="Moderator/" style="color:white">Moderators click here</a>
+        </div>
+        <div class="container" style="padding-right: 10%; padding-left: 10%;width:1920px!important;">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Active users</h3>
+                        </div>
+                        <div class="panel-body">
+                            <table id="table_div" class="table table-striped">
+                                <tbody>
+                                    <ui:repeat value="#{homeController.allUsers}" var="user">
+                                       <tr><td><a href="#{user.websiteURL}">#{user.userName}</a></td></tr>
+                                    </ui:repeat>   
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>   
+                </div>  
+            </div>  
+        </div>  
+    </h:body>
+</html>
+
+
+        

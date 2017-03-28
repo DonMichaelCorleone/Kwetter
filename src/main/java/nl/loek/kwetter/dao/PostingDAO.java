@@ -14,7 +14,7 @@ public interface PostingDAO {
 
     List<Posting> findAll();
 
-    List<Posting> findByUser(User u);
+    List<Posting> findByUser(String u);
 
     Posting findPosting(Long id);
 }
