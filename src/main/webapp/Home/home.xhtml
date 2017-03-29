@@ -16,8 +16,8 @@
 //            alert("document loaded");
         });
     </script>
-    <h:body style="background-image: url('../images/background.jpg">
-        <div class="well" style="background-color: #4099FF;"><h4 style="color:#fff">Profile page  #{homeController.username}</h4>
+    <h:body  style="background-color:#f5f5f">
+        <div class="well"><h4 style="color:#fff">Profile page  #{homeController.username}</h4>
             <div class="row">
                 <div class="col-md-6">
                     <p:button class="btn btn-default"  rendered="#{empty request.remoteUser}" value="Login" href="http://localhost:8080/Kwetter/User/" />

@@ -49,7 +49,7 @@
                                         <th>Manage Users</th>
                                     </tr>
                                     <a4j:repeat value="#{moderatorController.allUsers}" var="user">
-                                        <tr><h:form><td><input name="username" class="form form-control" type="text" value="#{user.userName}"/></td><td><input name="emailadress" class="form form-control" type="text" value="#{user.emailAdress}"/></td><td><input class="form form-control" name="location" type="text" value="#{user.location}"/></td><td><input class="form form-control" type="text" readonly="readOnly" name="websiteurl" value="#{user.websiteURL}"/></td><td><input name="role" class="form form-control" type="text" value="#{user.userRole}"/></td><td><h:commandButton action="#{moderatorController.editUser(user)}" class="btn btn-warning" value="Edit"></h:commandButton><h:commandButton action="#{moderatorController.removeUser(user)}" class="btn btn-error" value="Remove"></h:commandButton></td></h:form></tr>
+                                        <tr><h:form><td><input name="username" class="form form-control" type="text" value="#{user.userName}"/></td><td><input name="emailadress" class="form form-control" type="text" value="#{user.emailAdress}"/></td><td><input class="form form-control" name="location" type="text" value="#{user.location}"/></td><td><input class="form form-control" type="text" name="websiteurl" value="#{user.websiteURL}"/></td><td><input name="role" class="form form-control" type="text" value="#{user.userRole}"/></td><td><h:commandButton action="#{moderatorController.editUser(user)}" class="btn btn-warning" value="Edit"></h:commandButton><h:commandButton action="#{moderatorController.removeUser(user)}" class="btn btn-error" value="Remove"></h:commandButton></td></h:form></tr>
                                     </a4j:repeat>
                                 </tbody>
                             </table>
@@ -73,7 +73,7 @@
                                         <th>Date</th>
                                     </tr>
                                     <a4j:repeat value="#{moderatorController.allPostings}" var="tweet">
-                                        <tr><td>#{tweet.title}</td><td>#{tweet.author}</td><td>#{tweet.content}</td><td>#{tweet.date.time}</td><td><h:form><h:commandButton action="#{moderatorController.removePosting(tweet)}" class="btn btn-warning" value="Edit"></h:commandButton><h:commandButton action="#{moderatorController.removePosting(tweet)}" class="btn btn-error" value="Remove"></h:commandButton></h:form></td></tr>
+                                        <tr><td>#{tweet.title}</td><td>#{tweet.author}</td><td>#{tweet.content}</td><td>#{tweet.date.time}</td><td><h:form><h:commandButton action="#{moderatorController.removePosting(tweet)}" class="btn btn-error" value="Remove"></h:commandButton></h:form></td></tr>
                                     </a4j:repeat>
                                 </tbody>
                             </table>
