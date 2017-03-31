@@ -52,6 +52,13 @@ public class ApisResource {
         modelMapper = new ModelMapper();
     }
 
+    @GET
+    @Path("/post")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PostingDTO> getAllPostings() throws JsonProcessingException {
+        return this.convertPostingsToDto(kwetterService.findAllPostings());
+    }
+
     ///EVERYHING USER///
     /**
      * Gets all Users
@@ -88,9 +95,9 @@ public class ApisResource {
     @Path("user")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public String addUser(@FormParam("username") String username, @FormParam("password") String password,@FormParam("email") String email) {
+    public String addUser(@FormParam("username") String username, @FormParam("password") String password, @FormParam("email") String email) {
         try {
-            User u = new User(username,email, password);
+            User u = new User(username, email, password);
             return Boolean.toString(kwetterService.createUser(u));
         } catch (InternalServerErrorException e) {
             return e.getCause().toString();
@@ -112,7 +119,7 @@ public class ApisResource {
     @Path("user/edit")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public String editUser(@FormParam("profilepicture") String profilepicture,@FormParam("username") String username, @FormParam("password") String password, @FormParam("fullname") String fullname, @FormParam("location") String location, @FormParam("biography") String biography, @FormParam("websiteURL") String websiteURL) {
+    public String editUser(@FormParam("profilepicture") String profilepicture, @FormParam("username") String username, @FormParam("password") String password, @FormParam("fullname") String fullname, @FormParam("location") String location, @FormParam("biography") String biography, @FormParam("websiteURL") String websiteURL) {
         User u = kwetterService.findByUsername(username);
         u.setBiography(biography);
         u.setLocation(location);

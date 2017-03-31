@@ -19,6 +19,7 @@ public class UserDTO {
     private String emailAddress;
     private String profilePicture;
 
+
     public UserDTO(String name, String emailAddress) {
         this.userName = name;
         this.emailAddress = emailAddress;
@@ -27,6 +28,8 @@ public class UserDTO {
     public UserDTO() {
 
     }
+
+   
 
     public String getRole() {
         return role;
