@@ -7,9 +7,10 @@ package nl.loek.kwetter.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.hash.Hashing;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.ManagedBean;
 import javax.ejb.Stateless;
 import javax.ws.rs.POST;
 import javax.ws.rs.Consumes;
@@ -21,12 +22,15 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import nl.loek.kwetter.dto.PostingDTO;
 import nl.loek.kwetter.dto.UserDTO;
 import nl.loek.kwetter.model.Posting;
 import nl.loek.kwetter.model.User;
 import nl.loek.kwetter.service.KwetterService;
 import org.modelmapper.ModelMapper;
+import org.primefaces.json.JSONObject;
 
 /**
  * REST Web Service
@@ -118,17 +122,75 @@ public class ApisResource {
     @POST
     @Path("user/edit")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
-    public String editUser(@FormParam("profilepicture") String profilepicture, @FormParam("username") String username, @FormParam("password") String password, @FormParam("fullname") String fullname, @FormParam("location") String location, @FormParam("biography") String biography, @FormParam("websiteURL") String websiteURL) {
-        User u = kwetterService.findByUsername(username);
-        u.setBiography(biography);
-        u.setLocation(location);
-        u.setPassword(password);
-        u.setProfilePicture(profilepicture);
-        u.setWebsiteURL(websiteURL);
-        return Boolean.toString(kwetterService.editUser(u));
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response editUser(@FormParam("biography") String biography, @FormParam("location") String location, @FormParam("userName") String username) {
+        try {
+            User u = kwetterService.findByUsername(username);
+            u.setBiography(biography);
+            u.setLocation(location);
+            u.setUserName(username);
+            kwetterService.editUser(u);
+            return Response.status(200).entity("true").build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(200).entity("false").build();
+        }
     }
 
+    @POST
+    @Path("user/authenticate")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response authenticateUser(@FormParam("username") String username, @FormParam("password") String password) {
+        try {
+            User u = kwetterService.findByUsername(username);
+            String receivedPass = Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString();
+            
+            if (u.getPassword().equals(receivedPass)) {
+                return Response.status(200).entity(this.convertUserToDto(u)).build();
+            } else {
+                return Response.status(200).entity("false").build();
+            }
+        } catch (IllegalArgumentException e) {
+            return Response.status(200).entity("false").build();
+        }
+    }
+
+    @POST
+    @Path("user/post/")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response postTweet(@FormParam("username") String username, @FormParam("content") String content, @FormParam("title") String title) {
+        try {
+            Posting p = new Posting(username, title, content);
+            return Response.status(200).entity(kwetterService.createPosting(p).toString()).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(200).entity("false").build();
+        }
+    }
+
+//    @POST
+//    @Path("user/post/")
+//    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+//    @Produces(MediaType.TEXT_PLAIN)
+//    public Response postTweet(@FormParam("username") String username,
+//            @FormParam("title") String title,
+//            @FormParam("content") String content) throws JsonProcessingException {
+//        try {
+//            User u = kwetterService.findByUsername(username);
+//            Posting p = new Posting(u.getUserName(), title, content);
+//            this.kwetterService.createPosting(p);
+//            return Response.status(200).entity(true).build();
+//        } catch (IllegalArgumentException e) {
+//            return Response.status(200).entity(false).build();
+//        }
+//    }
+//        JSONObject myObject = new JSONObject(inputJsonObj);
+//        return myObject.toString();
+//        String username = (String) inputJsonObj.get("userName");
+//        String location = (String) inputJsonObj.get("location");
+//        String websiteURL = (String) inputJsonObj.get("websiteURL");
+//        String biography = (String) inputJsonObj.get("biography");
+//    }
     /**
      *
      * @param username
@@ -142,7 +204,8 @@ public class ApisResource {
     @GET
     @Path("user/remove/{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String removeUser(@PathParam("username") String username) {
+    public String removeUser(@PathParam("username") String username
+    ) {
         return Boolean.toString(kwetterService.removeUser(username));
     }
 
@@ -150,7 +213,9 @@ public class ApisResource {
     @Path("user/edit/setPassword")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public String setPassword(@FormParam("password") String password, @FormParam("username") String username) {
+    public String setPassword(@FormParam("password") String password,
+            @FormParam("username") String username
+    ) {
         User u = kwetterService.findByUsername(username);
         u.setPassword(password);
         return Boolean.toString(kwetterService.editUser(u));
@@ -160,7 +225,9 @@ public class ApisResource {
     @Path("user/edit/addFollower/")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public void addFollower(@FormParam("username") String username, @FormParam("follower") String follower) {
+    public void addFollower(@FormParam("username") String username,
+            @FormParam("follower") String follower
+    ) {
         User u = kwetterService.findByUsername(username);
         User followUser = kwetterService.findByUsername(follower);
         u.addFollower(followUser);
@@ -173,7 +240,8 @@ public class ApisResource {
     @Path("user/countFollowers/{username}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_PLAIN)
-    public int countFollowers(@PathParam("username") String username) {
+    public int countFollowers(@PathParam("username") String username
+    ) {
         Long id = kwetterService.findByUsername(username).getId();
         return kwetterService.countFollowers(id);
     }
@@ -182,7 +250,8 @@ public class ApisResource {
     @Path("user/countFollowing/{username}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_PLAIN)
-    public int countFollowing(@PathParam("username") String username) {
+    public int countFollowing(@PathParam("username") String username
+    ) {
         Long id = kwetterService.findByUsername(username).getId();
         return kwetterService.countFollowing(id);
     }
@@ -205,21 +274,26 @@ public class ApisResource {
         return mapper.writeValueAsString(this.convertUsersToDto(u.getFollowing()));
     }
 
-    @POST
-    @Path("user/post/")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
-    public String postTweet(@FormParam("username") String username, @FormParam("title") String title, @FormParam("content") String content) throws JsonProcessingException {
-        User u = kwetterService.findByUsername(username);
-        Posting p = new Posting(u.getUserName(), title, content);
-        return mapper.writeValueAsString(kwetterService.createPosting(p));
-    }
-
     @GET
     @Path("post/remove/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String removePost(@PathParam("id") Long id) {
+    public String removePost(@PathParam("id") Long id
+    ) {
         return Boolean.toString(kwetterService.removePosting(id));
+    }
+
+    @GET
+    @Path("user/findAllConnectedPosts/{username}")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getAllConnectedPosts(@PathParam("username") String username) throws JsonProcessingException {
+        User u = kwetterService.findByUsername(username);
+        List<Posting> AllConnectedPosts = new ArrayList<Posting>();
+        AllConnectedPosts.addAll(kwetterService.findTweetsByUser(u.getUserName()));
+        for (User following : u.getFollowing()) {
+            AllConnectedPosts.addAll(kwetterService.findTweetsByUser(following.getUserName()));
+        }
+        return mapper.writeValueAsString(this.convertPostingsToDto(AllConnectedPosts));
     }
 
     @GET
