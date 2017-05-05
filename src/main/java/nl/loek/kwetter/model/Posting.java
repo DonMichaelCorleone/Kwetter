@@ -22,30 +22,31 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
-@Table(name= "Posting")
+@Table(name = "Posting")
 @NamedQueries({
-    @NamedQuery(name = "Posting.findAll", query = "select p from Posting as p"),
-    @NamedQuery(name = "Posting.findByUserName", query = "select p from Posting as p where p.author = :author"),
-})
-public class Posting implements Serializable{
+    @NamedQuery(name = "Posting.findAll", query = "select p from Posting as p")
+    ,
+    @NamedQuery(name = "Posting.findByUserName", query = "select p from Posting as p where p.author = :author"),})
+public class Posting implements Serializable, Comparable<Posting> {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
 //    @ManyToOne(cascade={CascadeType.PERSIST, CascadeType.REMOVE})
     private String author;
-    
+
     private String title;
     private String content;
-    
+
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private GregorianCalendar date;
     
-    
-    public Posting(){
-        
+
+    public Posting() {
+
     }
-    
+
     public Posting(String author, String title, String content) {
         this.author = author;
         this.title = title;
@@ -80,7 +81,7 @@ public class Posting implements Serializable{
     public void setAuthor(String author) {
         this.author = author;
     }
-    
+
     public String getTitle() {
         return title;
     }
@@ -88,9 +89,14 @@ public class Posting implements Serializable{
     public void setTitle(String title) {
         this.title = title;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         return this.content;
+    }
+
+    @Override
+    public int compareTo(Posting o) {
+        return this.getDate().compareTo(o.getDate());
     }
 }

@@ -71,5 +71,9 @@ public class KwetterService {
     public Boolean createPosting(Posting p) {
         return postingDAO.createPosting(p);
     }
+    
+//    public Boolean authenticateUser(String username, String password){
+//        return userDAO.authenticateUser(username, password); 
+//    }
 
 }

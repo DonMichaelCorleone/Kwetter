@@ -34,4 +34,6 @@ public interface UserDAO {
     User getFollows(Long id);
     
     List<User> findAllUsers();
+    
+//    Boolean authenticateUser(String username, String password);
 }

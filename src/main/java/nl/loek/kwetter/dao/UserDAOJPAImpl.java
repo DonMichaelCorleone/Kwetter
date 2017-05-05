@@ -76,6 +76,14 @@ public class UserDAOJPAImpl implements UserDAO {
         q.setParameter("id", id);
         q.setParameter("password", password);
     }
+    
+    
+//    @Override
+//    public Boolean authenticateUser(String username, String password) {
+//        Query q = em.createNamedQuery("User.setPassword", User.class);
+//        q.setParameter("id", id);
+//        q.setParameter("password", password);
+//    }
 
     @Override
     public List<User> findAllUsers() {

@@ -1,6 +1,7 @@
 package nl.loek.kwetter.dto;
 
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -14,8 +15,6 @@ public class PostingDTO {
     private String content;
 
     private GregorianCalendar date;
-
-
 
     public PostingDTO() {
 
@@ -53,8 +52,11 @@ public class PostingDTO {
         this.content = content;
     }
 
-    public GregorianCalendar getDate() {
-        return date;
+    public String getDate() {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy MMM dd HH:mm:ss");
+
+        return sdf.format(this.date.getTime());
     }
 
     public void setDate(GregorianCalendar date) {
